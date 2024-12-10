@@ -1,0 +1,13 @@
+streamlit
+pandas
+matplotlib
+seaborn
+nltk
+gensim
+emoji
+scikit-learn
+transformers
+wordcloud
+textblob
+
+

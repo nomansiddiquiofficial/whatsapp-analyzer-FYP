@@ -735,6 +735,32 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 
+# def message_frequency(whatsapp_df):
+#     # Ensure the 'timestamp' column is in datetime format
+#     whatsapp_df['timestamp'] = pd.to_datetime(whatsapp_df['timestamp'])
+
+#     # Active Time Analysis: Count messages per hour of the day
+#     messages_per_hour = whatsapp_df['timestamp'].dt.hour.value_counts().sort_index()
+
+#     # Plotting the number of messages per hour
+#     plt.figure(figsize=(14, 8))
+#     messages_per_hour.plot(kind='bar')
+#     plt.title('Message Frequency by Hour of Day')
+#     plt.xlabel('Hour of Day')
+#     plt.ylabel('Number of Messages')
+#     plt.xticks(range(0, 24))
+#     st.pyplot(plt)
+
+#     # Response Time Analysis: Calculate time differences between messages
+#     whatsapp_df['response_time'] = whatsapp_df['timestamp'].diff()
+
+#     # Convert time differences to minutes
+#     whatsapp_df['response_time_minutes'] = whatsapp_df['response_time'].dt.total_seconds() / 60
+
+#     # Calculate average response time
+#     average_response_time = whatsapp_df['response_time_minutes'].mean()
+#     st.write(f"Average response time: {average_response_time:.2f} minutes")
+
 def message_frequency(whatsapp_df):
     # Ensure the 'timestamp' column is in datetime format
     whatsapp_df['timestamp'] = pd.to_datetime(whatsapp_df['timestamp'])
@@ -742,14 +768,36 @@ def message_frequency(whatsapp_df):
     # Active Time Analysis: Count messages per hour of the day
     messages_per_hour = whatsapp_df['timestamp'].dt.hour.value_counts().sort_index()
 
-    # Plotting the number of messages per hour
-    plt.figure(figsize=(14, 8))
-    messages_per_hour.plot(kind='bar')
-    plt.title('Message Frequency by Hour of Day')
-    plt.xlabel('Hour of Day')
-    plt.ylabel('Number of Messages')
-    plt.xticks(range(0, 24))
-    st.pyplot(plt)
+    # Convert 24-hour format to 12-hour format (AM/PM) without list comprehension
+    hours_12hr = []
+    for h in range(24):
+        if h == 0:
+            hours_12hr.append("12 AM")
+        elif h < 12:
+            hours_12hr.append(f"{h} AM")
+        elif h == 12:
+            hours_12hr.append("12 PM")
+        else:
+            hours_12hr.append(f"{h - 12} PM")
+
+    # Create an interactive bar chart for message frequency by hour
+    fig1 = px.bar(
+        x=messages_per_hour.index,
+        y=messages_per_hour.values,
+        labels={'x': 'Hour of Day', 'y': 'Number of Messages'},
+        title='Message Frequency by Hour of Day',
+        text=messages_per_hour.values
+    )
+    fig1.update_traces(textposition='outside')
+
+    # Update x-axis to show 12-hour format with AM/PM
+    fig1.update_layout(
+        xaxis=dict(
+            tickmode='array',
+            tickvals=list(range(0, 24)),
+            ticktext=hours_12hr
+        )
+    )
 
     # Response Time Analysis: Calculate time differences between messages
     whatsapp_df['response_time'] = whatsapp_df['timestamp'].diff()
@@ -759,6 +807,9 @@ def message_frequency(whatsapp_df):
 
     # Calculate average response time
     average_response_time = whatsapp_df['response_time_minutes'].mean()
+
+    # Display in Streamlit
+    st.plotly_chart(fig1, use_container_width=True)
     st.write(f"Average response time: {average_response_time:.2f} minutes")
 
 from wordcloud import WordCloud
@@ -788,6 +839,53 @@ def generate_wordcloud(whatsapp_df):
     plt.axis("off")
     st.pyplot(plt)
 
+# import plotly.express as px
+# from wordcloud import WordCloud
+# import pandas as pd
+# import re
+# import nltk
+# from nltk.corpus import stopwords
+# import matplotlib.pyplot as plt
+# import streamlit as st
+
+# def generate_wordcloud(whatsapp_df):
+#     nltk.download('stopwords', quiet=True)
+
+#     def preprocess(text):
+#         stop_words = set(stopwords.words('english'))
+#         words = re.findall(r'\b\w+\b', text.lower())
+#         return [word for word in words if word not in stop_words and word.isalpha()]
+
+#     # Combining all messages into a single text
+#     all_text = ' '.join(preprocess(' '.join(whatsapp_df['message'])))
+
+#     # Creating a word cloud
+#     wordcloud = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(all_text)
+
+#     # Convert word cloud data to a format Plotly can use
+#     word_freq = wordcloud.words_
+
+#     words = list(word_freq.keys())
+#     frequencies = list(word_freq.values())
+
+#     # Create a Plotly bar chart for the word cloud
+#     fig = px.bar(
+#         x=words,
+#         y=frequencies,
+#         labels={'x': 'Words', 'y': 'Frequency'},
+#         title='Word Cloud (Top Words)',
+#         text=frequencies
+#     )
+#     fig.update_traces(textposition='outside')
+#     fig.update_layout(
+#         xaxis_title='Words',
+#         yaxis_title='Frequency',
+#         xaxis_tickangle=90,
+#         showlegend=False
+#     )
+
+#     # Display in Streamlit
+#     st.plotly_chart(fig, use_container_width=True)
 
 import streamlit as st
 

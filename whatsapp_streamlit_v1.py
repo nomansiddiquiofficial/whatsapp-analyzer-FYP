@@ -575,11 +575,56 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import streamlit as st
 
+# def forecast_message_trends(whatsapp_df):
+#     if 'date' not in whatsapp_df.columns:
+#         st.error("Date column not found in the data.")
+#         return
+
+#     message_counts = whatsapp_df.groupby('date').size().reset_index(name='count')
+
+#     # Ensure the 'date' column is a datetime object
+#     message_counts['date'] = pd.to_datetime(message_counts['date'])
+#     start_date = message_counts['date'].min()
+
+#     # Calculate the number of days since the start for each date
+#     message_counts['date_numeric'] = (message_counts['date'] - start_date).dt.days
+
+#     X = message_counts[['date_numeric']]
+#     y = message_counts['count']
+
+#     model = LinearRegression()
+#     model.fit(X, y)
+
+#     future_days = st.slider("Select number of days to forecast", 10, 60, 30)
+#     future_dates = pd.date_range(start=message_counts['date'].max(), periods=future_days)
+
+#     # Calculate days since start for future dates
+#     future_dates_numeric = (future_dates - start_date).days
+
+#     future_predictions = model.predict(np.array(future_dates_numeric).reshape(-1, 1))
+
+#     plt.figure(figsize=(14, 8))
+#     plt.plot(message_counts['date'], y, label='Historical Message Counts')
+#     plt.plot(future_dates, future_predictions, label='Predicted Message Counts', color='red')
+#     plt.xlabel('Date')
+#     plt.ylabel('Number of Messages')
+#     plt.title('Predicted Future Message Trends')
+#     plt.legend()
+
+#     st.pyplot(plt)
+
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import plotly.graph_objs as go
+import streamlit as st
+
 def forecast_message_trends(whatsapp_df):
     if 'date' not in whatsapp_df.columns:
         st.error("Date column not found in the data.")
         return
 
+    # Prepare data
     message_counts = whatsapp_df.groupby('date').size().reset_index(name='count')
 
     # Ensure the 'date' column is a datetime object
@@ -592,26 +637,49 @@ def forecast_message_trends(whatsapp_df):
     X = message_counts[['date_numeric']]
     y = message_counts['count']
 
+    # Fit a linear regression model
     model = LinearRegression()
     model.fit(X, y)
 
+    # Get user input for forecasting
     future_days = st.slider("Select number of days to forecast", 10, 60, 30)
-    future_dates = pd.date_range(start=message_counts['date'].max(), periods=future_days)
+    future_dates = pd.date_range(start=message_counts['date'].max() + pd.Timedelta(days=1), periods=future_days)
 
     # Calculate days since start for future dates
     future_dates_numeric = (future_dates - start_date).days
 
+    # Make predictions
     future_predictions = model.predict(np.array(future_dates_numeric).reshape(-1, 1))
 
-    plt.figure(figsize=(14, 8))
-    plt.plot(message_counts['date'], y, label='Historical Message Counts')
-    plt.plot(future_dates, future_predictions, label='Predicted Message Counts', color='red')
-    plt.xlabel('Date')
-    plt.ylabel('Number of Messages')
-    plt.title('Predicted Future Message Trends')
-    plt.legend()
+    # Create traces for historical and future trends
+    trace_historical = go.Scatter(
+        x=message_counts['date'],
+        y=message_counts['count'],
+        mode='lines+markers',
+        name='Historical Message Counts',
+        line=dict(color='blue')
+    )
 
-    st.pyplot(plt)
+    trace_forecast = go.Scatter(
+        x=future_dates,
+        y=future_predictions,
+        mode='lines+markers',
+        name='Predicted Message Counts',
+        line=dict(color='red')
+    )
+
+    # Create the layout
+    layout = go.Layout(
+        title='Predicted Future Message Trends',
+        xaxis=dict(title='Date'),
+        yaxis=dict(title='Number of Messages'),
+        legend=dict(x=0, y=1),
+        hovermode='x'
+    )
+
+    # Create the figure and plot it
+    fig = go.Figure(data=[trace_historical, trace_forecast], layout=layout)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 
@@ -922,51 +990,146 @@ def show_emoji_usage_top_users(whatsapp_df):
     st.bar_chart(max_emojis)
 
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
+
+# def most_active_time(whatsapp_df):
+#     # Convert 'timestamp' column to datetime if it's not already
+#     if not pd.api.types.is_datetime64_any_dtype(whatsapp_df['timestamp']):
+#         whatsapp_df['timestamp'] = pd.to_datetime(whatsapp_df['timestamp'])
+
+#     whatsapp_df['hour'] = whatsapp_df['timestamp'].dt.hour
+#     active_hours = whatsapp_df['hour'].value_counts().sort_index()
+
+#     st.subheader("Most Active Hours of the Day")
+#     plt.figure(figsize=(12, 6))
+#     plt.bar(active_hours.index, active_hours.values)
+#     plt.xlabel('Hour of the Day')
+#     plt.ylabel('Number of Messages')
+#     plt.title('Activity by Hour')
+#     st.pyplot(plt)
+
+
+# def laugh_counter(whatsapp_df):
+#     laugh_words = ['lol', 'haha', '😂']
+#     whatsapp_df['laugh_count'] = whatsapp_df['message'].apply(lambda x: sum(word in x.lower() for word in laugh_words))
+
+#     total_laughs = whatsapp_df['laugh_count'].sum()
+
+#     st.subheader("Total 'LOLs' and 'Hahas'")
+#     st.write(f"Total LOLs and Hahas in the chat: {total_laughs}")
+
+
+# from collections import Counter
+# import emoji
+# from itertools import chain
+
+
+
+# def most_used_emojis(whatsapp_df):
+#     def extract_emojis(s):
+#         return [c for c in s if c in emoji.EMOJI_DATA]
+
+#     all_emojis = list(chain(*whatsapp_df['message'].apply(extract_emojis)))
+#     emoji_freq = Counter(all_emojis).most_common(5)
+
+#     st.subheader("Top 5 Emojis Used")
+#     for item in emoji_freq:
+#         st.write(f"{item[0]}: {item[1]} times")
+
+import plotly.graph_objs as go
+from collections import Counter
+import emoji
+from itertools import chain
+import pandas as pd
+import streamlit as st
 
 def most_active_time(whatsapp_df):
     # Convert 'timestamp' column to datetime if it's not already
     if not pd.api.types.is_datetime64_any_dtype(whatsapp_df['timestamp']):
         whatsapp_df['timestamp'] = pd.to_datetime(whatsapp_df['timestamp'])
 
+    # Extract hour from the timestamp
     whatsapp_df['hour'] = whatsapp_df['timestamp'].dt.hour
     active_hours = whatsapp_df['hour'].value_counts().sort_index()
 
+    # Create Plotly bar chart
+    fig = go.Figure(
+        data=go.Bar(
+            x=active_hours.index,
+            y=active_hours.values,
+            marker=dict(color='skyblue')
+        )
+    )
+    fig.update_layout(
+        title='Most Active Hours of the Day',
+        xaxis=dict(title='Hour of the Day'),
+        yaxis=dict(title='Number of Messages'),
+        bargap=0.2
+    )
     st.subheader("Most Active Hours of the Day")
-    plt.figure(figsize=(12, 6))
-    plt.bar(active_hours.index, active_hours.values)
-    plt.xlabel('Hour of the Day')
-    plt.ylabel('Number of Messages')
-    plt.title('Activity by Hour')
-    st.pyplot(plt)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 def laugh_counter(whatsapp_df):
+    # Define laugh-related words
     laugh_words = ['lol', 'haha', '😂']
-    whatsapp_df['laugh_count'] = whatsapp_df['message'].apply(lambda x: sum(word in x.lower() for word in laugh_words))
+    whatsapp_df['laugh_count'] = whatsapp_df['message'].apply(
+        lambda x: sum(word in x.lower() for word in laugh_words)
+    )
 
     total_laughs = whatsapp_df['laugh_count'].sum()
 
+    # Display the result
     st.subheader("Total 'LOLs' and 'Hahas'")
     st.write(f"Total LOLs and Hahas in the chat: {total_laughs}")
 
+    # Pie chart visualization for laugh distribution
+    laugh_distribution = {
+        'LOL/Haha Count': total_laughs,
+        'Other Messages': len(whatsapp_df) - total_laughs
+    }
 
-from collections import Counter
-import emoji
-from itertools import chain
-
+    fig = go.Figure(
+        data=go.Pie(
+            labels=list(laugh_distribution.keys()),
+            values=list(laugh_distribution.values()),
+            hole=0.4
+        )
+    )
+    fig.update_layout(title="Laughs vs Other Messages")
+    st.plotly_chart(fig, use_container_width=True)
 
 
 def most_used_emojis(whatsapp_df):
+    # Extract emojis from messages
     def extract_emojis(s):
         return [c for c in s if c in emoji.EMOJI_DATA]
 
     all_emojis = list(chain(*whatsapp_df['message'].apply(extract_emojis)))
     emoji_freq = Counter(all_emojis).most_common(5)
 
+    # Separate emojis and counts
+    emojis, counts = zip(*emoji_freq)
+
+    # Create Plotly bar chart
+    fig = go.Figure(
+        data=go.Bar(
+            x=emojis,
+            y=counts,
+            marker=dict(color='lightgreen'),
+            text=counts,
+            textposition='outside'
+        )
+    )
+    fig.update_layout(
+        title='Top 5 Emojis Used',
+        xaxis=dict(title='Emojis'),
+        yaxis=dict(title='Frequency'),
+        bargap=0.2
+    )
     st.subheader("Top 5 Emojis Used")
-    for item in emoji_freq:
-        st.write(f"{item[0]}: {item[1]} times")
+    st.plotly_chart(fig, use_container_width=True)
+
 
 
 import random
@@ -1020,18 +1183,62 @@ def chat_wordle(whatsapp_df):
 
 from textblob import TextBlob
 
-def mood_meter(whatsapp_df):
-    whatsapp_df['sentiment'] = whatsapp_df['message'].apply(lambda x: TextBlob(x).sentiment.polarity)
-    daily_sentiment = whatsapp_df.resample('D', on='timestamp').sentiment.mean()
+# def mood_meter(whatsapp_df):
+#     whatsapp_df['sentiment'] = whatsapp_df['message'].apply(lambda x: TextBlob(x).sentiment.polarity)
+#     daily_sentiment = whatsapp_df.resample('D', on='timestamp').sentiment.mean()
 
+#     st.subheader("Mood Meter Over Time")
+#     plt.figure(figsize=(10, 5))
+#     plt.plot(daily_sentiment.index, daily_sentiment.values, marker='o')
+#     plt.axhline(y=0, color='gray', linestyle='--')
+#     plt.title("Daily Chat Sentiment")
+#     plt.xlabel("Date")
+#     plt.ylabel("Sentiment Score")
+#     st.pyplot(plt)
+
+
+import plotly.graph_objs as go
+from textblob import TextBlob
+
+def mood_meter(whatsapp_df):
+    # Calculate sentiment polarity for each message
+    whatsapp_df['sentiment'] = whatsapp_df['message'].apply(lambda x: TextBlob(x).sentiment.polarity)
+    
+    # Resample sentiment scores to daily averages
+    daily_sentiment = whatsapp_df.resample('D', on='timestamp').sentiment.mean()
+    
+    # Create a Plotly line chart for the sentiment trend
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=daily_sentiment.index,
+            y=daily_sentiment.values,
+            mode='lines+markers',
+            marker=dict(size=6, color='blue'),
+            line=dict(color='royalblue'),
+            name='Sentiment Score'
+        )
+    )
+    fig.add_hline(
+        y=0,
+        line_dash="dash",
+        line_color="gray",
+        annotation_text="Neutral Sentiment",
+        annotation_position="bottom left"
+    )
+    
+    # Update chart layout
+    fig.update_layout(
+        title="Mood Meter Over Time",
+        xaxis_title="Date",
+        yaxis_title="Sentiment Score",
+        xaxis=dict(showgrid=True),
+        yaxis=dict(showgrid=True, zeroline=True),
+        template='plotly_white'
+    )
+    
     st.subheader("Mood Meter Over Time")
-    plt.figure(figsize=(10, 5))
-    plt.plot(daily_sentiment.index, daily_sentiment.values, marker='o')
-    plt.axhline(y=0, color='gray', linestyle='--')
-    plt.title("Daily Chat Sentiment")
-    plt.xlabel("Date")
-    plt.ylabel("Sentiment Score")
-    st.pyplot(plt)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 import streamlit as st

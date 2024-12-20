@@ -1066,7 +1066,6 @@ def show_most_frequent_words_by_users(whatsapp_df):
     
 
 def show_word_count_top_users(whatsapp_df):
-    #whatsapp_df = whatsapp_df[~whatsapp_df['sender'].str.contains('Messages and calls are end-to-end encrypted', na=False)]
     whatsapp_df['word_count'] = whatsapp_df['message'].apply(lambda x: len(x.split()))
     word_counts = whatsapp_df.groupby('sender')['word_count'].sum().sort_values(ascending=False).head(5)
     st.subheader("Word Count of Top 5 Users")

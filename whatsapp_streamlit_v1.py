@@ -538,17 +538,32 @@ def preprocess_and_extract_words(whatsapp_df):
 
     return processed_word_freq
 
-import emoji
+# import emoji
+# from collections import Counter
+
+# def extract_and_count_emojis(whatsapp_df):
+#     def extract_emojis(text):
+#         return [char for char in text if char in emoji.EMOJI_DATA]
+
+#     all_emojis = sum(whatsapp_df['message'].apply(extract_emojis), [])
+#     emoji_freq = Counter(all_emojis)
+
+#     return emoji_freq
+
+from emot.emo_unicode import UNICODE_EMOJI
 from collections import Counter
 
 def extract_and_count_emojis(whatsapp_df):
+    # Function to extract emojis
     def extract_emojis(text):
-        return [char for char in text if char in emoji.EMOJI_DATA]
+        return [char for char in text if char in UNICODE_EMOJI]
 
+    # Apply the function and count emojis
     all_emojis = sum(whatsapp_df['message'].apply(extract_emojis), [])
     emoji_freq = Counter(all_emojis)
 
     return emoji_freq
+
 
 import matplotlib.pyplot as plt
 
@@ -1174,7 +1189,7 @@ def most_active_time(whatsapp_df):
 
 def laugh_counter(whatsapp_df):
     # Define laugh-related words
-    laugh_words = ['lol', 'haha', '😂']
+    laugh_words = ['lol', 'haha', '😂', 'hahaha', '😁', '😀','😃','😄','😆','😅','🙂','😊','😇','🤩']
     whatsapp_df['laugh_count'] = whatsapp_df['message'].apply(
         lambda x: sum(word in x.lower() for word in laugh_words)
     )
@@ -1201,11 +1216,12 @@ def laugh_counter(whatsapp_df):
     fig.update_layout(title="Laughs vs Other Messages")
     st.plotly_chart(fig, use_container_width=True)
 
+from emot.emo_unicode import UNICODE_EMOJI
 
 def most_used_emojis(whatsapp_df):
     # Extract emojis from messages
-    def extract_emojis(s):
-        return [c for c in s if c in emoji.EMOJI_DATA]
+    def extract_emojis(text):
+        return [char for char in text if char in UNICODE_EMOJI]
 
     all_emojis = list(chain(*whatsapp_df['message'].apply(extract_emojis)))
     emoji_freq = Counter(all_emojis).most_common(5)

@@ -237,12 +237,34 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
 def perform_eda(whatsapp_df):
+    # Filter out system messages like encryption notice
+    whatsapp_df = whatsapp_df[~whatsapp_df['sender'].str.contains('Messages and calls are end-to-end encrypted', na=False)]
+
     # Extract date, time, day of week, and hour for further analysis
     whatsapp_df['date'] = whatsapp_df['timestamp'].dt.date
     whatsapp_df['time'] = whatsapp_df['timestamp'].dt.time
     whatsapp_df['day_of_week'] = whatsapp_df['timestamp'].dt.day_name()
     whatsapp_df['hour'] = whatsapp_df['timestamp'].dt.hour
+
+    # Metrics for cards
+    total_senders = whatsapp_df['sender'].nunique()
+    total_media_omitted = whatsapp_df['message'].str.contains('<Media omitted>').sum()
+    total_deleted_msgs = whatsapp_df['message'].str.contains('This message was deleted').sum()
+
+    # Horizontal Cards
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Number of Senders", total_senders)
+    col2.metric("Media Omitted Count", total_media_omitted)
+    col3.metric("Deleted Messages Count", total_deleted_msgs)
 
     # Message count analysis
     messages_per_day = whatsapp_df['date'].value_counts().sort_index()
@@ -275,11 +297,8 @@ def perform_eda(whatsapp_df):
         title='Messages per Day of the Week'
     )
 
-    # Messages per hour (bar plot)
-    # Convert 24-hour format to 12-hour format with AM/PM
+    # Messages per hour (bar plot with 12-hour AM/PM format)
     hour_labels = messages_per_hour.index.map(lambda x: f"{x % 12 or 12}{' AM' if x < 12 else ' PM'}")
-    
-   
     fig4 = px.bar(
         x=hour_labels,
         y=messages_per_hour.values,
@@ -287,7 +306,6 @@ def perform_eda(whatsapp_df):
         title='Messages per Hour of the Day'
     )
     fig4.update_xaxes(tickangle=0)
-
 
     # Display plots in Streamlit
     st.plotly_chart(fig1, use_container_width=True)
@@ -402,6 +420,7 @@ import streamlit as st
 # Ensure NLTK data is downloaded (you might need to handle this outside the function if it causes issues in Streamlit)
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
+nltk.download('punkt_tab')
 
 def perform_topic_modeling(whatsapp_df, num_topics=5):
     def preprocess_text(text):
@@ -418,6 +437,7 @@ def perform_topic_modeling(whatsapp_df, num_topics=5):
 
     # Running LDA model
     lda_model = LdaModel(corpus, num_topics=num_topics, id2word=dictionary, passes=10)
+    print(nltk.data.path)
     return lda_model
 
 
@@ -425,24 +445,63 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
+# def visualize_topics(lda_model, num_words=10):
+#     topics = {i: [word for word, _ in lda_model.show_topic(i, topn=num_words)] for i in range(lda_model.num_topics)}
+#     topics_df = pd.DataFrame(topics)
+
+#     plt.figure(figsize=(15, 5))
+#     for i in topics_df.columns:
+#         plt.subplot(1, len(topics_df.columns), i+1)
+#         plt.barh(topics_df[i], range(len(topics_df[i])), color='blue')
+#         plt.title(f'Topic {i}')
+#         plt.yticks(range(len(topics_df[i])), topics_df[i])
+#     plt.tight_layout()
+#     st.pyplot(plt)
+import plotly.graph_objs as go
+import pandas as pd
+
 def visualize_topics(lda_model, num_words=10):
+    # Extract topics and words
     topics = {i: [word for word, _ in lda_model.show_topic(i, topn=num_words)] for i in range(lda_model.num_topics)}
     topics_df = pd.DataFrame(topics)
-
-    plt.figure(figsize=(15, 5))
+    
+    # Create a Plotly figure
+    fig = go.Figure()
+    
+    # Add a bar for each topic
     for i in topics_df.columns:
-        plt.subplot(1, len(topics_df.columns), i+1)
-        plt.barh(topics_df[i], range(len(topics_df[i])), color='blue')
-        plt.title(f'Topic {i}')
-        plt.yticks(range(len(topics_df[i])), topics_df[i])
-    plt.tight_layout()
-    st.pyplot(plt)
+        fig.add_trace(
+            go.Bar(
+                x=list(reversed(topics_df[i])),  # Reverse for horizontal bar chart
+                y=list(range(1, num_words + 1)),  # Rank order (1 to 10)
+                orientation='h',
+                name=f'Topic {i}',
+                text=list(reversed(topics_df[i])),
+                textposition="auto"
+            )
+        )
+
+    # Update layout for better appearance
+    fig.update_layout(
+        title="Top Words for Each Topic",
+        barmode='group',
+        xaxis_title="Words",
+        yaxis_title="Rank",
+        yaxis=dict(autorange="reversed"),  # Ensure rank order is top-to-bottom
+        template="plotly_white",
+        height=400 + 200 * lda_model.num_topics,  # Adjust height dynamically
+        showlegend=True
+    )
+
+    # Streamlit integration
+    st.plotly_chart(fig, use_container_width=True)
 
 
 import matplotlib.pyplot as plt
 import streamlit as st
 
 def user_messages(whatsapp_df):
+    
     # Counting messages per sender
     messages_per_sender = whatsapp_df['sender'].value_counts()
 
@@ -956,23 +1015,66 @@ def generate_wordcloud(whatsapp_df):
 #     st.plotly_chart(fig, use_container_width=True)
 
 import streamlit as st
+from collections import Counter
+import re
 
-def show_top_users_by_messages(whatsapp_df):
-    top_senders = whatsapp_df['sender'].value_counts().head(5)
+def show_most_frequent_words_by_users(whatsapp_df):
+    # Remove "media " messages entirely
+    whatsapp_df = whatsapp_df[~whatsapp_df['message'].str.contains('media', na=False)]
+    # Remove "omitted" messages entirely
+    
+    whatsapp_df = whatsapp_df[~whatsapp_df['message'].str.contains('omitted', na=False)]
 
-    st.subheader("Top 5 Users by Number of Messages")
-    st.bar_chart(top_senders)
+    # Remove system messages
+    whatsapp_df = whatsapp_df[~whatsapp_df['sender'].str.contains('Messages and calls are end-to-end encrypted', na=False)]
 
+    # Prepare stopwords
+    nltk.download('stopwords', quiet=True)
+    stop_words = set(stopwords.words('english'))
+
+    # Function to preprocess messages
+    def preprocess(text):
+        words = re.findall(r'\b\w+\b', text.lower())
+        return [word for word in words if word not in stop_words]
+
+    # Get most frequent words by user
+    user_words = whatsapp_df.groupby('sender')['message'].apply(
+        lambda messages: Counter(preprocess(' '.join(messages.fillna("")))).most_common(10)
+    )
+
+    # Prepare data for visualization
+    user_data = []
+    for user, words in user_words.items():
+        for word, count in words:
+            user_data.append({'User': user, 'Word': word, 'Count': count})
+
+    user_words_df = pd.DataFrame(user_data)
+
+    # Visualization
+    st.subheader("Most Frequently Used Words by Users")
+    fig = px.bar(
+        user_words_df,
+        x='Word',
+        y='Count',
+        color='User',
+        barmode='group',
+        title='Most Frequently Used Words by Users',
+        labels={'Word': 'Word', 'Count': 'Frequency', 'User': 'Sender'}
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    
 
 def show_word_count_top_users(whatsapp_df):
+    #whatsapp_df = whatsapp_df[~whatsapp_df['sender'].str.contains('Messages and calls are end-to-end encrypted', na=False)]
     whatsapp_df['word_count'] = whatsapp_df['message'].apply(lambda x: len(x.split()))
     word_counts = whatsapp_df.groupby('sender')['word_count'].sum().sort_values(ascending=False).head(5)
-
     st.subheader("Word Count of Top 5 Users")
     st.bar_chart(word_counts)
-
+    
 
 def show_one_word_messages_top_users(whatsapp_df):
+    
     whatsapp_df['is_one_word'] = whatsapp_df['word_count'] == 1
     one_word_counts = whatsapp_df[whatsapp_df['is_one_word']].groupby('sender').size().sort_values(ascending=False).head(5)
 
@@ -983,6 +1085,7 @@ def show_one_word_messages_top_users(whatsapp_df):
 import emoji
 
 def show_emoji_usage_top_users(whatsapp_df):
+    whatsapp_df = whatsapp_df[~whatsapp_df['sender'].str.contains('Messages and calls are end-to-end encrypted', na=False)]
     whatsapp_df['emoji_count'] = whatsapp_df['message'].apply(lambda x: len([char for char in x if char in emoji.EMOJI_DATA]))
     max_emojis = whatsapp_df.groupby('sender')['emoji_count'].sum().sort_values(ascending=False).head(5)
 
@@ -1365,10 +1468,11 @@ def main():
             elif analysis_option == "User Analysis":
 
                 display_big_bold_centered_text("""Detailed User Analysis""")
-                show_top_users_by_messages(data)
+                show_most_frequent_words_by_users(data)
                 show_word_count_top_users(data)
                 show_one_word_messages_top_users(data)
                 show_emoji_usage_top_users(data)
+                
             elif analysis_option == "Funny Analysis":
                 display_big_bold_centered_text("Funny Analysis")
                 most_active_time(data)

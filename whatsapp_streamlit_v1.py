@@ -1188,7 +1188,7 @@ def most_active_time(whatsapp_df):
 
 
 def laugh_counter(whatsapp_df):
-    # Define laugh-related words
+   
     laugh_words = ['lol', 'haha', '😂', 'hahaha', '😁', '😀','😃','😄','😆','😅','🙂','😊','😇','🤩']
     whatsapp_df['laugh_count'] = whatsapp_df['message'].apply(
         lambda x: sum(word in x.lower() for word in laugh_words)
@@ -1196,7 +1196,7 @@ def laugh_counter(whatsapp_df):
 
     total_laughs = whatsapp_df['laugh_count'].sum()
 
-    # Display the result
+   
     st.subheader("Total 'LOLs' and 'Hahas'")
     st.write(f"Total LOLs and Hahas in the chat: {total_laughs}")
 

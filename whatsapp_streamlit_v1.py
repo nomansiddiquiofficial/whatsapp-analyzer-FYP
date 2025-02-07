@@ -241,10 +241,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-
 def perform_eda(whatsapp_df):
     # Filter out system messages like encryption notice
     whatsapp_df = whatsapp_df[~whatsapp_df['sender'].str.contains('Messages and calls are end-to-end encrypted', na=False)]
@@ -268,7 +264,11 @@ def perform_eda(whatsapp_df):
 
     # Message count analysis
     messages_per_day = whatsapp_df['date'].value_counts().sort_index()
+    whatsapp_df = whatsapp_df[whatsapp_df['message'] != ""]
     messages_per_sender = whatsapp_df['sender'].value_counts()
+    st.bar_chart(messages_per_sender)
+   
+    
     messages_per_day_of_week = whatsapp_df['day_of_week'].value_counts()
     messages_per_hour = whatsapp_df['hour'].value_counts().sort_index()
 
@@ -279,17 +279,8 @@ def perform_eda(whatsapp_df):
         labels={'x': 'Date', 'y': 'Number of Messages'},
         title='Messages per Day'
     )
-
-    # Messages per sender (bar plot)
-    fig2 = px.bar(
-        x=messages_per_sender.index,
-        y=messages_per_sender.values,
-        labels={'x': 'Sender', 'y': 'Number of Messages'},
-        title='Messages per Sender'
-    )
-    fig2.update_xaxes(tickangle=45)
-
-    # Messages per day of the week (bar plot)
+   
+ 
     fig3 = px.bar(
         x=messages_per_day_of_week.index,
         y=messages_per_day_of_week.values,
@@ -309,7 +300,6 @@ def perform_eda(whatsapp_df):
 
     # Display plots in Streamlit
     st.plotly_chart(fig1, use_container_width=True)
-    st.plotly_chart(fig2, use_container_width=True)
     st.plotly_chart(fig3, use_container_width=True)
     st.plotly_chart(fig4, use_container_width=True)
 
@@ -1087,11 +1077,10 @@ def show_word_count_top_users(whatsapp_df):
     st.bar_chart(word_counts)
     
 
-def show_one_word_messages_top_users(whatsapp_df):
+def show_one_word_messages_count_top_users(whatsapp_df):
     
     whatsapp_df['is_one_word'] = whatsapp_df['word_count'] == 1
     one_word_counts = whatsapp_df[whatsapp_df['is_one_word']].groupby('sender').size().sort_values(ascending=False).head(5)
-
     st.subheader("One-Word Messages by Top 5 Users")
     st.bar_chart(one_word_counts)
 
@@ -1100,9 +1089,9 @@ import emoji
 
 def show_emoji_usage_top_users(whatsapp_df):
     whatsapp_df = whatsapp_df[~whatsapp_df['sender'].str.contains('Messages and calls are end-to-end encrypted', na=False)]
+    whatsapp_df = whatsapp_df[whatsapp_df['message'] != ""]
     whatsapp_df['emoji_count'] = whatsapp_df['message'].apply(lambda x: len([char for char in x if char in emoji.EMOJI_DATA]))
     max_emojis = whatsapp_df.groupby('sender')['emoji_count'].sum().sort_values(ascending=False).head(5)
-
     st.subheader("Emoji Usage by Top 5 Users")
     st.bar_chart(max_emojis)
 
@@ -1442,6 +1431,8 @@ occur together. By analyzing how the prominence of these topics changes over tim
 
 
 def main():
+   
+
     #st.image('/Users/senthilesakkiappan/Desktop/Stream_Lit_Myfolder/streamlit_01.jpg', width=700)
     st.image('assets/streamlit_01.jpg', width=700)
     st.title("WhatsApp Chat Analysis")
@@ -1452,6 +1443,7 @@ def main():
         # Further analysis options go here
         pass  # Replace with analysis function calls
 
+    
     with st.sidebar:
       #st.image('/Users/senthilesakkiappan/Desktop/Stream_Lit_Myfolder/streamlit.jpg', width=300)  # Display a logo
       st.image('assets/streamlit.jpg', width=300)  # Display a logo
@@ -1485,7 +1477,7 @@ def main():
                 display_big_bold_centered_text("""Detailed User Analysis""")
                 show_most_frequent_words_by_users(data)
                 show_word_count_top_users(data)
-                show_one_word_messages_top_users(data)
+                show_one_word_messages_count_top_users(data)
                 show_emoji_usage_top_users(data)
                 
             elif analysis_option == "Funny Analysis":

@@ -1347,6 +1347,10 @@ def mood_meter(whatsapp_df):
     st.subheader("Mood Meter Over Time")
     st.plotly_chart(fig, use_container_width=True)
 
+def report_generation(whatsapp_df):
+    pass
+
+
 
 import streamlit as st
 
@@ -1430,11 +1434,251 @@ occur together. By analyzing how the prominence of these topics changes over tim
 
 
 
-def main():
+#  def main():
    
 
-    #st.image('/Users/senthilesakkiappan/Desktop/Stream_Lit_Myfolder/streamlit_01.jpg', width=700)
-    st.image('assets/streamlit_01.jpg', width=700)
+#     #st.image('/Users/senthilesakkiappan/Desktop/Stream_Lit_Myfolder/streamlit_01.jpg', width=700)
+#     #st.image('assets/streamlit_01.jpg', width=700)
+#     st.title("WhatsApp Chat Analysis")
+
+#     data = load_data()
+
+#     if data is not None:
+#         # Further analysis options go here
+#         pass  # Replace with analysis function calls
+
+    
+#     with st.sidebar:
+#       #st.image('/Users/senthilesakkiappan/Desktop/Stream_Lit_Myfolder/streamlit.jpg', width=300)  # Display a logo
+#      # st.image('assets/streamlit.jpg', width=300)  # Display a logo
+#       st.write("## Navigation")
+#       analysis_option = st.selectbox("Choose the Analysis you want to perform",
+#                       ["About the App","Show Data","EDA", "Sentiment Analysis","User Analysis","Topic Analysis","Emojis and Words Analysis", "Forecasting","Alert",
+#                        "Funny Analysis","Transformers-Sentiment Analysis","NER","Summarization","Text Generation","Message Frequency",
+#                        "Challenge","Wordcloud", "Reporting"])
+
+
+
+# #    analysis_option = st.selectbox("Choose the Analysis you want to perform",
+# #                      ["About the App","Show Data","EDA", "Sentiment Analysis", "Topic Analysis","Emojis and Words Analysis", "Forecasting","Alert",
+# #                       "Transformers-Sentiment Analysis","NER","Summarization","Text Generation","Message Frequency","Wordcloud"])
+#     # Create a placeholder for future outputs
+#     output_placeholder = st.empty()
+
+
+#     if data is not None:
+#             if analysis_option == "EDA":
+
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("EDA")
+#                 perform_eda(data)
+#                 # Call EDA function
+#                 # eda_function(data)
+#                 pass
+
+#             elif analysis_option == "User Analysis":
+
+#                 display_big_bold_centered_text("""Detailed User Analysis""")
+#                 show_most_frequent_words_by_users(data)
+#                 show_word_count_top_users(data)
+#                 show_one_word_messages_count_top_users(data)
+#                 show_emoji_usage_top_users(data)
+                
+#             elif analysis_option == "Funny Analysis":
+#                 display_big_bold_centered_text("Funny Analysis")
+#                 most_active_time(data)
+#                 laugh_counter(data)
+#                 most_used_emojis(data)
+#                 mood_meter(data)
+#             elif analysis_option == "Challenge":
+#                 display_big_bold_centered_text("Challenge")
+#                 mystery_user_challenge(data)
+#                 chat_wordle(data)
+
+#             elif analysis_option == "Sentiment Analysis":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Sentiment Analysis")
+#                 perform_date(data)
+#                 analyzed_data = perform_sentiment_analysis(data)
+#                 visualize_sentiment_analysis(analyzed_data)
+#                 st.markdown(senti_text)
+#                 # Call Sentiment Analysis function
+#                 # sentiment_analysis_function(data)
+#                 pass
+#             elif analysis_option == "Topic Analysis":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Topic Analysis")
+#                 num_topics = st.slider("Select number of topics", 3, 10, 5)
+#                 lda_model = perform_topic_modeling(data, num_topics=num_topics)
+#                 visualize_topics(lda_model)
+#                 st.markdown(topic_text)
+#                 # Call Topic Analysis function
+#                 # ...
+#                 pass
+#             elif analysis_option == "Show Messages per User":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Show Messages per User")
+#                 user_messages(data)
+
+#             elif analysis_option == "Emojis and Words Analysis":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Emojis and Words Analysis")
+#                 processed_word_freq = preprocess_and_extract_words(data)
+#                 emoji_freq = extract_and_count_emojis(data)
+#                 visualize_words_and_emojis(processed_word_freq, emoji_freq)
+#                 st.markdown(emoji_text)
+#             elif analysis_option == "Forecasting":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Forecasting")
+#                 perform_date(data)
+#                 forecast_message_trends(data)
+#                 st.markdown(forecasting_text)
+#             elif analysis_option == "Alert":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Alerts")
+#                 display_alerts(data)
+#             elif analysis_option == "Transformers-Sentiment Analysis":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Transformers-Sentiment Analysis")
+#                 transformers_sentiment_analysis(data)
+#             elif analysis_option == "NER":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("NER")
+#                 transformers_ner_analysis(data)
+#             elif analysis_option == "Summarization":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Summarization")
+#                 transformers_text_summarization(data)
+#             elif analysis_option == "Text Generation":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Text Generation")
+#                 transformers_text_generation()
+#             elif analysis_option == "Message Frequency":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Message Frequency")
+#                 message_frequency(data)
+#             elif analysis_option == "Wordcloud":
+#                 output_placeholder.empty()  # Clear previous output
+#                 display_big_bold_centered_text("Wordcloud")
+#                 generate_wordcloud(data)
+#                 st.markdown(word_cloud_text)
+#             elif analysis_option == "Reporting":
+#                 display_big_bold_centered_text("Report Generation")
+#                 report_generation(data)
+#             elif analysis_option == "Show Data":
+#                 display_big_bold_centered_text("Display the datafrrame")
+#                 st.dataframe(data.head(500))
+            
+#             elif analysis_option == "About the App":
+#                 display_big_bold_centered_text("About the App") 
+#                 st.write("""
+#                           # WhatsApp Chat Analysis App
+#                           Welcome to the WhatsApp Chat Analysis App! This application offers a range of analytical tools to help you
+#                           gain insights from your WhatsApp chat data. Here’s what you can do with this app:
+
+#                           - **EDA (Exploratory Data Analysis):** Get a general overview of your chat data through various statistics and visualizations.
+#                           - **Sentiment Analysis:** Understand the emotional tone of the messages in your chat.
+#                           - **Topic Analysis:** Discover the common topics discussed in your chat.
+#                           - **Emojis and Words Analysis:** Explore the usage patterns of emojis and frequently used words.
+#                           - **Forecasting:** Predict future trends in your chat message frequency.
+#                           - **Alert:** Set up alerts based on specific keywords or sentiments.
+#                           - **Transformers-Based Analysis:** Utilize state-of-the-art NLP models for sentiment analysis (Transformers-Sentiment Analysis) and named entity recognition (NER).
+#                           - **Summarization:** Generate concise summaries of lengthy chat discussions.
+#                           - **Text Generation:** Experiment with AI-based text generation for creative responses.
+#                           - **Message Frequency:** Analyze the frequency of messages at different times.
+#                           - **Wordcloud:** Visualize the most common words in your chat in a word cloud format.
+
+#                           Dive into your WhatsApp chat data and uncover interesting insights with this app!
+#                           """)
+
+
+
+            # ... other analysis options
+
+    # Custom CSS to move the sidebar to the top
+# st.markdown(
+#     """
+#     <style>
+   
+#     /* Target the sidebar container */
+#     section[data-testid="stSidebar"] {
+        
+#         top: 0;
+#         left: 0;
+#         right: 0;
+#         height: 0;
+#         background-color: black;
+#         padding: 10px ;
+#         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+#         width:100px;
+      
+#     }
+
+#     /* Ensure the sidebar content is displayed horizontally */
+#     section[data-testid="stSidebar"] > div {
+#         display: flex;
+#         flex-direction: row;
+#         align-items: flex-start;
+#         gap: 10px;
+#     }
+
+#     /* Adjust the logo and select box styling */
+#     section[data-testid="stSidebar"] img {
+#         margin-right: 10px;
+        
+#     }
+
+#     section[data-testid="stSidebar"] .stSelectbox {
+#         margin-left: auto;
+#     }
+
+#     /* Add padding to the main content to avoid overlap */
+#     .main .block-container {
+#         padding-top: 100px;
+#     }
+#     </style>
+    
+#     """,
+#     unsafe_allow_html=True
+# )
+import streamlit as st
+
+# Custom CSS to adjust sidebar content positioning
+st.markdown(
+    """
+    <style>
+        /* Target the sidebar container */
+        section[data-testid="stSidebar"] {
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background-color: black;
+            padding: 20px;
+        }
+
+       
+        /* Shift main content down */
+        .main .block-container {
+            padding-top: 30px !important;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+def main():
+    # Display the sidebar at the top
+    with st.sidebar:
+        st.image('assets/whatsapp_logo.png',width=150)  # Display a logo
+        st.write("## Navigation")
+        analysis_option = st.selectbox("Choose the Analysis you want to perform",
+                                    ["About the App", "Show Data", "EDA", "Sentiment Analysis", "User Analysis",
+                                        "Topic Analysis", "Emojis and Words Analysis", "Forecasting", "Alert",
+                                        "Funny Analysis", "Transformers-Sentiment Analysis", "NER", "Summarization",
+                                        "Text Generation", "Message Frequency", "Challenge", "Wordcloud"])
+
+    # Main content
+    #st.image('assets/streamlit_01.jpg', width=100)
     st.title("WhatsApp Chat Analysis")
 
     data = load_data()
@@ -1443,149 +1687,140 @@ def main():
         # Further analysis options go here
         pass  # Replace with analysis function calls
 
-    
-    with st.sidebar:
-      #st.image('/Users/senthilesakkiappan/Desktop/Stream_Lit_Myfolder/streamlit.jpg', width=300)  # Display a logo
-      st.image('assets/streamlit.jpg', width=300)  # Display a logo
-      st.write("## Navigation")
-      analysis_option = st.selectbox("Choose the Analysis you want to perform",
-                      ["About the App","Show Data","EDA", "Sentiment Analysis","User Analysis","Topic Analysis","Emojis and Words Analysis", "Forecasting","Alert",
-                       "Funny Analysis","Transformers-Sentiment Analysis","NER","Summarization","Text Generation","Message Frequency",
-                       "Challenge","Wordcloud"])
-
-
-
-#    analysis_option = st.selectbox("Choose the Analysis you want to perform",
-#                      ["About the App","Show Data","EDA", "Sentiment Analysis", "Topic Analysis","Emojis and Words Analysis", "Forecasting","Alert",
-#                       "Transformers-Sentiment Analysis","NER","Summarization","Text Generation","Message Frequency","Wordcloud"])
     # Create a placeholder for future outputs
     output_placeholder = st.empty()
 
-
     if data is not None:
-            if analysis_option == "EDA":
+        if analysis_option == "EDA":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("EDA")
+            perform_eda(data)
+            # Call EDA function
+            # eda_function(data)
+            pass
 
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("EDA")
-                perform_eda(data)
-                # Call EDA function
-                # eda_function(data)
-                pass
+        elif analysis_option == "User Analysis":
+            display_big_bold_centered_text("""Detailed User Analysis""")
+            show_most_frequent_words_by_users(data)
+            show_word_count_top_users(data)
+        # show_one_word_messages_top_users(data)
+            show_emoji_usage_top_users(data)
 
-            elif analysis_option == "User Analysis":
+        elif analysis_option == "Funny Analysis":
+            display_big_bold_centered_text("Funny Analysis")
+            most_active_time(data)
+            laugh_counter(data)
+            most_used_emojis(data)
+            mood_meter(data)
 
-                display_big_bold_centered_text("""Detailed User Analysis""")
-                show_most_frequent_words_by_users(data)
-                show_word_count_top_users(data)
-                show_one_word_messages_count_top_users(data)
-                show_emoji_usage_top_users(data)
-                
-            elif analysis_option == "Funny Analysis":
-                display_big_bold_centered_text("Funny Analysis")
-                most_active_time(data)
-                laugh_counter(data)
-                most_used_emojis(data)
-                mood_meter(data)
-            elif analysis_option == "Challenge":
-                display_big_bold_centered_text("Challenge")
-                mystery_user_challenge(data)
-                chat_wordle(data)
+        elif analysis_option == "Challenge":
+            display_big_bold_centered_text("Challenge")
+            mystery_user_challenge(data)
+            chat_wordle(data)
 
-            elif analysis_option == "Sentiment Analysis":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Sentiment Analysis")
-                perform_date(data)
-                analyzed_data = perform_sentiment_analysis(data)
-                visualize_sentiment_analysis(analyzed_data)
-                st.markdown(senti_text)
-                # Call Sentiment Analysis function
-                # sentiment_analysis_function(data)
-                pass
-            elif analysis_option == "Topic Analysis":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Topic Analysis")
-                num_topics = st.slider("Select number of topics", 3, 10, 5)
-                lda_model = perform_topic_modeling(data, num_topics=num_topics)
-                visualize_topics(lda_model)
-                st.markdown(topic_text)
-                # Call Topic Analysis function
-                # ...
-                pass
-            elif analysis_option == "Show Messages per User":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Show Messages per User")
-                user_messages(data)
+        elif analysis_option == "Sentiment Analysis":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Sentiment Analysis")
+            perform_date(data)
+            analyzed_data = perform_sentiment_analysis(data)
+            visualize_sentiment_analysis(analyzed_data)
+            st.markdown(senti_text)
+            # Call Sentiment Analysis function
+            # sentiment_analysis_function(data)
+            pass
 
-            elif analysis_option == "Emojis and Words Analysis":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Emojis and Words Analysis")
-                processed_word_freq = preprocess_and_extract_words(data)
-                emoji_freq = extract_and_count_emojis(data)
-                visualize_words_and_emojis(processed_word_freq, emoji_freq)
-                st.markdown(emoji_text)
-            elif analysis_option == "Forecasting":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Forecasting")
-                perform_date(data)
-                forecast_message_trends(data)
-                st.markdown(forecasting_text)
-            elif analysis_option == "Alert":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Alerts")
-                display_alerts(data)
-            elif analysis_option == "Transformers-Sentiment Analysis":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Transformers-Sentiment Analysis")
-                transformers_sentiment_analysis(data)
-            elif analysis_option == "NER":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("NER")
-                transformers_ner_analysis(data)
-            elif analysis_option == "Summarization":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Summarization")
-                transformers_text_summarization(data)
-            elif analysis_option == "Text Generation":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Text Generation")
-                transformers_text_generation()
-            elif analysis_option == "Message Frequency":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Message Frequency")
-                message_frequency(data)
-            elif analysis_option == "Wordcloud":
-                output_placeholder.empty()  # Clear previous output
-                display_big_bold_centered_text("Wordcloud")
-                generate_wordcloud(data)
-                st.markdown(word_cloud_text)
-            elif analysis_option == "Show Data":
-                display_big_bold_centered_text("Display the datafrrame")
-                st.dataframe(data.head(500))
-            elif analysis_option == "About the App":
-                display_big_bold_centered_text("About the App")
-                st.write("""
-                          # WhatsApp Chat Analysis App
-                          Welcome to the WhatsApp Chat Analysis App! This application offers a range of analytical tools to help you
-                          gain insights from your WhatsApp chat data. Here’s what you can do with this app:
+        elif analysis_option == "Topic Analysis":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Topic Analysis")
+            num_topics = st.slider("Select number of topics", 3, 10, 5)
+            lda_model = perform_topic_modeling(data, num_topics=num_topics)
+            visualize_topics(lda_model)
+            st.markdown(topic_text)
+            # Call Topic Analysis function
+            # ...
+            pass
 
-                          - **EDA (Exploratory Data Analysis):** Get a general overview of your chat data through various statistics and visualizations.
-                          - **Sentiment Analysis:** Understand the emotional tone of the messages in your chat.
-                          - **Topic Analysis:** Discover the common topics discussed in your chat.
-                          - **Emojis and Words Analysis:** Explore the usage patterns of emojis and frequently used words.
-                          - **Forecasting:** Predict future trends in your chat message frequency.
-                          - **Alert:** Set up alerts based on specific keywords or sentiments.
-                          - **Transformers-Based Analysis:** Utilize state-of-the-art NLP models for sentiment analysis (Transformers-Sentiment Analysis) and named entity recognition (NER).
-                          - **Summarization:** Generate concise summaries of lengthy chat discussions.
-                          - **Text Generation:** Experiment with AI-based text generation for creative responses.
-                          - **Message Frequency:** Analyze the frequency of messages at different times.
-                          - **Wordcloud:** Visualize the most common words in your chat in a word cloud format.
+        elif analysis_option == "Show Messages per User":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Show Messages per User")
+            user_messages(data)
 
-                          Dive into your WhatsApp chat data and uncover interesting insights with this app!
-                          """)
+        elif analysis_option == "Emojis and Words Analysis":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Emojis and Words Analysis")
+            processed_word_freq = preprocess_and_extract_words(data)
+            emoji_freq = extract_and_count_emojis(data)
+            visualize_words_and_emojis(processed_word_freq, emoji_freq)
+            st.markdown(emoji_text)
 
+        elif analysis_option == "Forecasting":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Forecasting")
+            perform_date(data)
+            forecast_message_trends(data)
+            st.markdown(forecasting_text)
 
+        elif analysis_option == "Alert":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Alerts")
+            display_alerts(data)
 
-            # ... other analysis options
+        elif analysis_option == "Transformers-Sentiment Analysis":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Transformers-Sentiment Analysis")
+            transformers_sentiment_analysis(data)
+
+        elif analysis_option == "NER":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("NER")
+            transformers_ner_analysis(data)
+
+        elif analysis_option == "Summarization":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Summarization")
+            transformers_text_summarization(data)
+
+        elif analysis_option == "Text Generation":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Text Generation")
+            transformers_text_generation()
+
+        elif analysis_option == "Message Frequency":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Message Frequency")
+            message_frequency(data)
+
+        elif analysis_option == "Wordcloud":
+            output_placeholder.empty()  # Clear previous output
+            display_big_bold_centered_text("Wordcloud")
+            generate_wordcloud(data)
+            st.markdown(word_cloud_text)
+
+        elif analysis_option == "Show Data":
+            display_big_bold_centered_text("Display the dataframe")
+            st.dataframe(data.head(500))
+
+        elif analysis_option == "About the App":
+            display_big_bold_centered_text("About the App")
+            st.write("""
+                    # WhatsApp Chat Analysis App
+                    Welcome to the WhatsApp Chat Analysis App! This application offers a range of analytical tools to help you
+                    gain insights from your WhatsApp chat data. Here’s what you can do with this app:
+
+                    - *EDA (Exploratory Data Analysis):* Get a general overview of your chat data through various statistics and visualizations.
+                    - *Sentiment Analysis:* Understand the emotional tone of the messages in your chat.
+                    - *Topic Analysis:* Discover the common topics discussed in your chat.
+                    - *Emojis and Words Analysis:* Explore the usage patterns of emojis and frequently used words.
+                    - *Forecasting:* Predict future trends in your chat message frequency.
+                    - *Alert:* Set up alerts based on specific keywords or sentiments.
+                    - *Transformers-Based Analysis:* Utilize state-of-the-art NLP models for sentiment analysis (Transformers-Sentiment Analysis) and named entity recognition (NER).
+                    - *Summarization:* Generate concise summaries of lengthy chat discussions.
+                    - *Text Generation:* Experiment with AI-based text generation for creative responses.
+                    - *Message Frequency:* Analyze the frequency of messages at different times.
+                    - *Wordcloud:* Visualize the most common words in your chat in a word cloud format.
+
+                    Dive into your WhatsApp chat data and uncover interesting insights with this app!
+                    """)
 
 
 

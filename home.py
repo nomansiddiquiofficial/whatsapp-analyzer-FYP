@@ -9,10 +9,9 @@ def fyp():
 
         ### **Team Members:**
         - **Member 1:** Noman Siddiqui  
-                
-        - **Member 2:** 
-        - **Member 3:** [Name]
-        - **Member 4:** [Name]
+        - **Member 2:** Sheeza Khan
+        - **Member 3:** Maryam
+        - **Member 4:** Abdul Rahim
 
         ### **Project Overview:**
         - **Exploratory Data Analysis (EDA):** General overview of chat data.
